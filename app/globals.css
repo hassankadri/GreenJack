@@ -1,26 +1,729 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --dh-ivory: #f3f0e7;
+  --dh-paper: #faf8f2;
+  --dh-charcoal: #171817;
+  --dh-charcoal-soft: #222522;
+  --dh-sage: #b8c7b2;
+  --dh-sage-soft: #dfe6da;
+  --dh-orange: #c9834d;
+  --dh-orange-soft: #ecd1ba;
+  --dh-ink: #171817;
+  --dh-muted: #6f736d;
+  --dh-border: rgba(23, 24, 23, 0.12);
+
+  --dh-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dh-ease-soft: cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  --dh-fast: 160ms;
+  --dh-normal: 280ms;
+  --dh-slow: 800ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ============================================================
+   BASE
+============================================================ */
+
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--dh-ivory);
+  color: var(--dh-ink);
+  font-family: var(--font-dm-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 999px;
+  opacity: 0.45;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+body::before {
+  width: 420px;
+  height: 420px;
+  left: -180px;
+  top: 18%;
+  background: rgba(184, 199, 178, 0.16);
+  filter: blur(70px);
+  animation: dh-ambient-left 18s var(--dh-ease-soft) infinite;
+}
+
+body::after {
+  width: 380px;
+  height: 380px;
+  right: -150px;
+  top: 58%;
+  background: rgba(201, 131, 77, 0.10);
+  filter: blur(75px);
+  animation: dh-ambient-right 22s var(--dh-ease-soft) infinite;
+}
+
+::selection {
+  background: var(--dh-sage);
+  color: var(--dh-ink);
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #969990;
+}
+
+:focus-visible {
+  outline: 2px solid var(--dh-orange);
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   PAGE ENTRANCE
+============================================================ */
+
+@keyframes dh-page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+main {
+  animation: dh-page-in 700ms var(--dh-ease) both;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+============================================================ */
+
+.dh-display {
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  font-weight: 500;
+
+  animation: dh-title-in 900ms var(--dh-ease) both;
+}
+
+.dh-eyebrow {
+  font-size: 0.7rem;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+
+  animation: dh-eyebrow-in 700ms var(--dh-ease) both;
+}
+
+.dh-body {
+  color: var(--dh-muted);
+  line-height: 1.7;
+}
+
+/* ============================================================
+   TRUE TEXT REVEAL
+============================================================ */
+
+@keyframes dh-title-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0) scale(0.985);
+    clip-path: inset(18% 0 0 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes dh-eyebrow-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    letter-spacing: 0.28em;
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    letter-spacing: 0.2em;
+  }
+}
+
+/* ============================================================
+   PANELS
+============================================================ */
+
+.dh-panel {
+  border: 1px solid var(--dh-border);
+  background: rgba(250, 248, 242, 0.82);
+  border-radius: 28px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 18px 50px rgba(23, 24, 23, 0.06);
+
+  animation: dh-panel-in 850ms var(--dh-ease) both;
+
+  transition:
+    transform var(--dh-normal) var(--dh-ease),
+    border-color var(--dh-normal) var(--dh-ease-soft),
+    box-shadow var(--dh-normal) var(--dh-ease-soft),
+    background-color var(--dh-normal) var(--dh-ease-soft);
+}
+
+.dh-panel-dark {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--dh-charcoal);
+  color: #f7f5ee;
+  border-radius: 28px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 24px 60px rgba(23, 24, 23, 0.14);
+
+  animation: dh-panel-in 900ms var(--dh-ease) both;
+
+  transition:
+    transform var(--dh-normal) var(--dh-ease),
+    border-color var(--dh-normal) var(--dh-ease-soft),
+    box-shadow var(--dh-normal) var(--dh-ease-soft);
+}
+
+@keyframes dh-panel-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (hover: hover) {
+  .dh-panel:hover {
+    transform: translateY(-5px);
+    border-color: rgba(23, 24, 23, 0.18);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.72) inset,
+      0 28px 65px rgba(23, 24, 23, 0.10);
+  }
+
+  .dh-panel-dark:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 34px 75px rgba(23, 24, 23, 0.22);
+  }
+}
+
+/* ============================================================
+   SECTION ENTRANCE
+============================================================ */
+
+main section {
+  animation: dh-section-in 900ms var(--dh-ease) both;
+}
+
+main section:nth-of-type(2) {
+  animation-delay: 80ms;
+}
+
+main section:nth-of-type(3) {
+  animation-delay: 160ms;
+}
+
+main section:nth-of-type(4) {
+  animation-delay: 240ms;
+}
+
+@keyframes dh-section-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+
+.dh-button {
+  position: relative;
+  isolation: isolate;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+
+  min-height: 48px;
+  padding: 0.75rem 1.2rem;
+
+  border-radius: 999px;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  overflow: hidden;
+
+  transition:
+    transform var(--dh-fast) var(--dh-ease),
+    background-color var(--dh-fast) var(--dh-ease-soft),
+    color var(--dh-fast) var(--dh-ease-soft),
+    border-color var(--dh-fast) var(--dh-ease-soft),
+    box-shadow var(--dh-fast) var(--dh-ease-soft);
+}
+
+.dh-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.18) 45%,
+    transparent 70%
+  );
+
+  transform: translateX(-120%);
+}
+
+.dh-button:hover::before {
+  animation: dh-button-sweep 700ms var(--dh-ease);
+}
+
+@keyframes dh-button-sweep {
+  to {
+    transform: translateX(120%);
+  }
+}
+
+.dh-button:hover {
+  transform: translateY(-2px);
+}
+
+.dh-button:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.dh-button-primary {
+  background: var(--dh-charcoal);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(23, 24, 23, 0.12);
+}
+
+.dh-button-primary:hover {
+  background: #292b29;
+  box-shadow: 0 16px 38px rgba(23, 24, 23, 0.18);
+}
+
+.dh-button-secondary {
+  border: 1px solid var(--dh-border);
+  background: rgba(255, 255, 255, 0.52);
+  color: var(--dh-ink);
+}
+
+.dh-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(23, 24, 23, 0.20);
+}
+
+/* ============================================================
+   REVEAL MOTION
+============================================================ */
+
+@keyframes dh-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.dh-fade-up {
+  animation: dh-fade-up 800ms var(--dh-ease) both;
+}
+
+.dh-delay-1 {
+  animation-delay: 100ms;
+}
+
+.dh-delay-2 {
+  animation-delay: 200ms;
+}
+
+.dh-delay-3 {
+  animation-delay: 300ms;
+}
+
+.dh-delay-4 {
+  animation-delay: 400ms;
+}
+
+/* ============================================================
+   STAGGERED CHILDREN
+============================================================ */
+
+.dh-stagger > * {
+  animation: dh-fade-up 750ms var(--dh-ease) both;
+}
+
+.dh-stagger > *:nth-child(1) {
+  animation-delay: 60ms;
+}
+
+.dh-stagger > *:nth-child(2) {
+  animation-delay: 140ms;
+}
+
+.dh-stagger > *:nth-child(3) {
+  animation-delay: 220ms;
+}
+
+.dh-stagger > *:nth-child(4) {
+  animation-delay: 300ms;
+}
+
+.dh-stagger > *:nth-child(5) {
+  animation-delay: 380ms;
+}
+
+.dh-stagger > *:nth-child(6) {
+  animation-delay: 460ms;
+}
+
+/* ============================================================
+   FLOATING ELEMENT
+============================================================ */
+
+@keyframes dh-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+.dh-float {
+  animation: dh-float 5.5s var(--dh-ease-soft) infinite;
+  will-change: transform;
+}
+
+/* ============================================================
+   ORBS / AMBIENT MOTION
+============================================================ */
+
+.dh-orb {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 999px;
+
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.dh-orb-sage {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(184, 199, 178, 0.9),
+    rgba(184, 199, 178, 0.1) 68%,
+    transparent 72%
+  );
+
+  animation: dh-orb-sage 15s var(--dh-ease-soft) infinite;
+}
+
+.dh-orb-orange {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(201, 131, 77, 0.34),
+    rgba(201, 131, 77, 0.04) 68%,
+    transparent 72%
+  );
+
+  animation: dh-orb-orange 18s var(--dh-ease-soft) infinite;
+}
+
+@keyframes dh-orb-sage {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate3d(18px, -20px, 0) scale(1.025);
+  }
+
+  66% {
+    transform: translate3d(-10px, 14px, 0) scale(0.985);
+  }
+}
+
+@keyframes dh-orb-orange {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-20px, 18px, 0) scale(1.04);
+  }
+}
+
+@keyframes dh-ambient-left {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(35px, -25px, 0) scale(1.08);
+  }
+}
+
+@keyframes dh-ambient-right {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-30px, 22px, 0) scale(1.07);
+  }
+}
+
+/* ============================================================
+   DRAW / NUMBER MOTION
+============================================================ */
+
+@keyframes dh-number-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0) scale(0.75);
+  }
+
+  70% {
+    transform: translate3d(0, -2px, 0) scale(1.04);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.dh-number {
+  display: inline-block;
+  animation: dh-number-in 650ms var(--dh-ease) both;
+}
+
+/* ============================================================
+   SOFT PULSE
+============================================================ */
+
+@keyframes dh-soft-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.035);
+    opacity: 0.94;
+  }
+}
+
+.dh-pulse {
+  animation: dh-soft-pulse 3.5s ease-in-out infinite;
+}
+
+/* ============================================================
+   IMAGE MICRO-MOTION
+============================================================ */
+
+.dh-image {
+  overflow: hidden;
+}
+
+.dh-image img {
+  transform: scale(1);
+  transition:
+    transform 900ms var(--dh-ease),
+    filter 900ms var(--dh-ease);
+}
+
+@media (hover: hover) {
+  .dh-image:hover img {
+    transform: scale(1.045);
+  }
+}
+
+/* ============================================================
+   LINK MOTION
+============================================================ */
+
+.dh-link {
+  position: relative;
+  width: fit-content;
+
+  transition:
+    color var(--dh-fast) var(--dh-ease-soft),
+    opacity var(--dh-fast) var(--dh-ease-soft);
+}
+
+.dh-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+
+  transform: scaleX(0);
+  transform-origin: right;
+
+  transition: transform 300ms var(--dh-ease);
+}
+
+.dh-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ============================================================
+   TEXTURE
+============================================================ */
+
+.dh-texture {
+  position: relative;
+  isolation: isolate;
+}
+
+.dh-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  opacity: 0.16;
+
+  background-image: radial-gradient(
+    rgba(23, 24, 23, 0.2) 0.55px,
+    transparent 0.55px
+  );
+
+  background-size: 8px 8px;
+}
+
+/* ============================================================
+   ACCESSIBLE REDUCED MOTION
+============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  body::before,
+  body::after {
+    animation: none;
+  }
+
+  main,
+  main section,
+  .dh-display,
+  .dh-eyebrow,
+  .dh-panel,
+  .dh-panel-dark {
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+   SCROLLBAR
+============================================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dh-ivory);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b9b9b0;
+  border: 3px solid var(--dh-ivory);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #92958c;
 }
