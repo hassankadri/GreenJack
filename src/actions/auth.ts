@@ -21,7 +21,7 @@ export async function login(formData: FormData) {
 
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -30,7 +30,13 @@ export async function login(formData: FormData) {
     redirectWithError("/login", "Invalid email or password.");
   }
 
-  redirect("/dashboard");
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .single();
+
+  redirect(profile?.role === "admin" ? "/admin" : "/dashboard");
 }
 
 export async function signup(formData: FormData) {
